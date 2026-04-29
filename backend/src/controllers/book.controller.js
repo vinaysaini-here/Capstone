@@ -37,25 +37,68 @@ export const getBookById = asyncHandler(async (req, res) => {
 // @route   POST /api/books
 // @access  Private/Admin
 export const createBook = asyncHandler(async (req, res) => {
-    const book = new Book({
-        title: 'Sample Book',
-        author: 'Sample Author',
-        description: 'Sample description',
-        price: 0,
-        category: 'Sample Category',
-        image: '/images/sample.jpg',
-        stock: 10,
-    });
+    try {
+        const { title, author, description, price, category, stock } = req.body  || {};
 
-    const createdBook = await book.save();
-    res.status(201).json(createdBook);
+        // ✅ Validation
+        if (!title || !author || !price) {
+            res.status(400);
+            
+            throw new Error('Title, Author and Price are required');
+        }
+
+        // Default values
+        let imageUrl = 'https://images.pexels.com/photos/11527060/pexels-photo-11527060.jpeg';
+        let fileUrl = '';
+
+        // ✅ Safe file handling
+        if (req.files) {
+            // Image
+            if (req.files.image && req.files.image.length > 0) {
+                imageUrl = `/uploads/books/${req.files.image[0].filename}`;
+            }
+
+            // PDF / Document
+            if (req.files.document && req.files.document.length > 0) {
+                fileUrl = `/uploads/books/${req.files.document[0].filename}`;
+            }
+        }
+
+        // ✅ Create book
+        const book = new Book({
+            title,
+            author,
+            description: description || '',
+            price: Number(price),
+            category: category || 'General',
+            imageUrl,
+            fileUrl,
+            stock: stock ? Number(stock) : 0,
+        });
+
+        const createdBook = await book.save();
+
+        res.status(201).json({
+            success: true,
+            message: 'Book created successfully',
+            data: createdBook,
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: error.message || 'Server Error',
+        });
+    }
 });
 
 // @desc    Update a book
 // @route   PUT /api/books/:id
 // @access  Private/Admin
 export const updateBook = asyncHandler(async (req, res) => {
-    const { title, author, description, price, category, image, stock } = req.body;
+    const { title, author, description, price, category, stock } = req.body;
 
     const book = await Book.findById(req.params.id);
 
@@ -65,8 +108,16 @@ export const updateBook = asyncHandler(async (req, res) => {
         book.description = description || book.description;
         book.price = price || book.price;
         book.category = category || book.category;
-        book.image = image || book.image;
         book.stock = stock || book.stock;
+
+        if (req.files) {
+            if (req.files.image && req.files.image.length > 0) {
+                book.imageUrl = `/uploads/books/${req.files.image[0].filename}`;
+            }
+            if (req.files.document && req.files.document.length > 0) {
+                book.fileUrl = `/uploads/books/${req.files.document[0].filename}`;
+            }
+        }
 
         const updatedBook = await book.save();
         res.json(updatedBook);

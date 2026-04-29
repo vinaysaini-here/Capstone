@@ -23,9 +23,12 @@ const bookSchema = new mongoose.Schema(
             type: String,
             required: [true, 'Please provide category'],
         },
-        image: {
+        imageUrl: {
             type: String,
             default: '/book-placeholder.jpg',
+        },
+        fileUrl: {
+            type: String,
         },
         stock: {
             type: Number,
