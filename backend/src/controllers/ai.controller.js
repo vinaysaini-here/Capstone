@@ -2,8 +2,8 @@ import { GoogleGenAI } from '@google/genai';
 import Book from '../models/Book.js';
 
 // Initialize Gemini SDK with API Key
-console.log( process.env.GEMINI_API_KEY);
-const ai = new GoogleGenAI({ apiKey: "AIzaSyBxqTlbqaBnTTUsLge8g43PpJ3y7Yja65c" });
+
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 const textModel = 'gemini-2.5-flash';
 
 // ⚡ PERFORMANCE & STABILITY: Timeout wrapper for Gemini API calls (10 seconds)

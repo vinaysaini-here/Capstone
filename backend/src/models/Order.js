@@ -11,7 +11,8 @@ const orderSchema = new mongoose.Schema(
             {
                 title: { type: String, required: true },
                 qty: { type: Number, required: true },
-                image: { type: String, required: true },
+                image: { type: String },
+                imageUrl: { type: String },
                 price: { type: Number, required: true },
                 book: {
                     type: mongoose.Schema.Types.ObjectId,
@@ -30,6 +31,19 @@ const orderSchema = new mongoose.Schema(
             status: { type: String },
             update_time: { type: String },
             email_address: { type: String },
+            signature: { type: String },
+        },
+        razorpayOrderId: {
+            type: String,
+            index: true,
+        },
+        address: {
+            fullName: { type: String, required: true },
+            phone: { type: String, required: true },
+            address: { type: String, required: true },
+            city: { type: String, required: true },
+            state: { type: String, required: true },
+            pincode: { type: String, required: true },
         },
         totalPrice: {
             type: Number,
@@ -43,6 +57,16 @@ const orderSchema = new mongoose.Schema(
         },
         paidAt: {
             type: Date,
+        },
+        paymentStatus: {
+            type: String,
+            enum: ['Pending', 'Paid', 'Failed'],
+            default: 'Pending',
+        },
+        orderStatus: {
+            type: String,
+            enum: ['Placed', 'Processing', 'Shipped', 'Delivered', 'Cancelled'],
+            default: 'Placed',
         },
         isDelivered: {
             type: Boolean,

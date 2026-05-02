@@ -34,6 +34,14 @@ const userSchema = new mongoose.Schema(
                 ref: 'Order',
             },
         ],
+        address: {
+            fullName: { type: String },
+            phone: { type: String },
+            address: { type: String },
+            city: { type: String },
+            state: { type: String },
+            pincode: { type: String },
+        },
     },
     { timestamps: true }
 );
@@ -41,7 +49,7 @@ const userSchema = new mongoose.Schema(
 // Encrypt password before saving
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) {
-        next();
+        return next();
     }
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);

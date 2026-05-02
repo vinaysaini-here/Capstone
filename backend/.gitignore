@@ -42,3 +42,5 @@ next-env.d.ts
 
 
 /uploads
+
+/node_modules
