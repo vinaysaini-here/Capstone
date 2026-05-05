@@ -2,7 +2,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import Book from '../models/Book.js';
 
 // ✅ Proper Gemini setup
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "AIzaSyB1eg1_QRhKAMH3getaP_HNlKiy86tyWcg");
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY );
 
 const model = genAI.getGenerativeModel({
     model: "gemini-2.5-flash"
